@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="neon">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Task Tracker">
+    <meta name="theme-color" content="#ff00ff">
+    <link rel="apple-touch-icon" href="manifest-icon-192.png">
+    <style>
+        /* ══════════════════════════════════════════
+           THEMES — CSS custom properties per theme
+        ══════════════════════════════════════════ */
+
+        /* ── NEON (default) ── */
+        :root, [data-theme="neon"] {
+            --color-bg-primary: #0a0e27;
+            --color-surface: #1a1f3a;
+            --color-text-primary: #00ff9f;
+            --color-text-secondary: #00d4ff;
+            --color-primary: #ff00ff;
+            --color-primary-hover: #cc00cc;
+            --color-border: rgba(0, 255, 159, 0.3);
+            --color-success: #00ff9f;
+            --color-error: #ff0055;
+            --color-neon-pink: #ff00ff;
+            --color-neon-cyan: #00d4ff;
+            --color-neon-green: #00ff9f;
+            --color-neon-yellow: #ffff00;
+            --body-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --body-text-shadow: 0 0 10px rgba(0, 255, 159, 0.5);
+            --task-border: 1px solid var(--color-neon-cyan);
+            --task-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+            --task-hover-shadow: 0 0 25px rgba(0, 212, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.3);
+            --form-border: 2px solid var(--color-neon-pink);
+            --form-shadow: 0 0 20px rgba(255, 0, 255, 0.4), inset 0 0 20px rgba(255, 0, 255, 0.1);
+            --stat-border: 2px solid var(--color-neon-green);
+            --stat-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+            --radius-task: 6px;
+            --radius-form: 8px;
+            --radius-btn: 6px;
+        }
+
+        /* ── NOTEBOOK ── */
+        [data-theme="notebook"] {
+            --color-bg-primary: #fdf6e3;
+            --color-surface: rgba(255,255,255,0.6);
+            --color-text-primary: #3a3028;
+            --color-text-secondary: #8a6a3a;
+            --color-primary: #c0392b;
+            --color-primary-hover: #96281b;
+            --color-border: #c8a87a;
+            --color-success: #27ae60;
+            --color-error: #c0392b;
+            --color-neon-pink: #c0392b;
+            --color-neon-cyan: #c8a87a;
+            --color-neon-green: #27ae60;
+            --color-neon-yellow: #f39c12;
+            --body-font: 'Georgia', 'Times New Roman', serif;
+            --body-text-shadow: none;
+            --task-border: none;
+            --task-shadow: none;
+            --task-hover-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --form-border: 1px solid #c8a87a;
+            --form-shadow: none;
+            --stat-border: 1px solid #c8a87a;
+            --stat-shadow: none;
+            --radius-task: 0px;
+            --radius-form: 4px;
+            --radius-btn: 20px;
+        }
+
+        /* ── MINIMAL ── */
+        [data-theme="minimal"] {
+            --color-bg-primary: #f9fafb;
+            --color-surface: #ffffff;
+            --color-text-primary: #111827;
+            --color-text-secondary: #6b7280;
+            --color-primary: #111827;
+            --color-primary-hover: #374151;
+            --color-border: #e5e7eb;
+            --color-success: #059669;
+            --color-error: #dc2626;
+            --color-neon-pink: #e5e7eb;
+            --color-neon-cyan: #e5e7eb;
+            --color-neon-green: #059669;
+            --color-neon-yellow: #d97706;
+            --body-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --body-text-shadow: none;
+            --task-border: 1px solid var(--color-border);
+            --task-shadow: none;
+            --task-hover-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            --form-border: 1px solid var(--color-border);
+            --form-shadow: none;
+            --stat-border: 1px solid var(--color-border);
+            --stat-shadow: none;
+            --radius-task: 6px;
+            --radius-form: 8px;
+            --radius-btn: 6px;
+        }
+
+        /* ── RETRO TERMINAL ── */
+        [data-theme="retro"] {
+            --color-bg-primary: #0d0d0d;
+            --color-surface: #111111;
+            --color-text-primary: #33ff33;
+            --color-text-secondary: #1a9a1a;
+            --color-primary: #33ff33;
+            --color-primary-hover: #22cc22;
+            --color-border: #1a3a1a;
+            --color-success: #33ff33;
+            --color-error: #ff3333;
+            --color-neon-pink: #33ff33;
+            --color-neon-cyan: #1a9a1a;
+            --color-neon-green: #33ff33;
+            --color-neon-yellow: #ffff00;
+            --body-font: 'Courier New', 'Lucida Console', monospace;
+            --body-text-shadow: 0 0 8px rgba(51, 255, 51, 0.4);
+            --task-border: 1px solid #1a3a1a;
+            --task-shadow: none;
+            --task-hover-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+            --form-border: 1px solid #33ff33;
+            --form-shadow: 0 0 10px rgba(51, 255, 51, 0.2);
+            --stat-border: 1px solid #1a3a1a;
+            --stat-shadow: none;
+            --radius-task: 0px;
+            --radius-form: 0px;
+            --radius-btn: 0px;
+        }
+
+        /* ── PASTEL ── */
+        [data-theme="pastel"] {
+            --color-bg-primary: #ede7f6;
+            --color-surface: #ffffff;
+            --color-text-primary: #3d3d5c;
+            --color-text-secondary: #9e86c8;
+            --color-primary: #9e86c8;
+            --color-primary-hover: #7d65a8;
+            --color-border: #ddd0f0;
+            --color-success: #81c784;
+            --color-error: #e57373;
+            --color-neon-pink: #f48fb1;
+            --color-neon-cyan: #81d4fa;
+            --color-neon-green: #81c784;
+            --color-neon-yellow: #fff176;
+            --body-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --body-text-shadow: none;
+            --task-border: none;
+            --task-shadow: 0 2px 8px rgba(158, 134, 200, 0.18);
+            --task-hover-shadow: 0 4px 16px rgba(158, 134, 200, 0.35);
+            --form-border: 1px solid #ddd0f0;
+            --form-shadow: 0 2px 12px rgba(158, 134, 200, 0.2);
+            --stat-border: none;
+            --stat-shadow: 0 2px 8px rgba(158, 134, 200, 0.18);
+            --radius-task: 14px;
+            --radius-form: 18px;
+            --radius-btn: 20px;
+        }
+
+        /* ── DARK ELEGANT ── */
+        [data-theme="dark-elegant"] {
+            --color-bg-primary: #1c1c1e;
+            --color-surface: #2c2c2e;
+            --color-text-primary: #f5f5f7;
+            --color-text-secondary: #8e8e93;
+            --color-primary: #0a84ff;
+            --color-primary-hover: #0070d8;
+            --color-border: #3a3a3c;
+            --color-success: #30d158;
+            --color-error: #ff453a;
+            --color-neon-pink: #bf5af2;
+            --color-neon-cyan: #0a84ff;
+            --color-neon-green: #30d158;
+            --color-neon-yellow: #ffd60a;
+            --body-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            --body-text-shadow: none;
+            --task-border: none;
+            --task-shadow: none;
+            --task-hover-shadow: 0 2px 14px rgba(0,0,0,0.45);
+            --form-border: none;
+            --form-shadow: none;
+            --stat-border: none;
+            --stat-shadow: none;
+            --radius-task: 10px;
+            --radius-form: 14px;
+            --radius-btn: 8px;
+        }
+
+        /* ══════════════════════════════════════════
+           NOTEBOOK SPECIAL STYLES
+        ══════════════════════════════════════════ */
+        [data-theme="notebook"] body {
+            background-image: repeating-linear-gradient(
+                transparent, transparent 31px, #b8d4e8 31px, #b8d4e8 32px
+            );
+        }
+        [data-theme="notebook"] .container {
+            border-left: 4px solid #e88080;
+            padding-left: 2.5rem !important;
+        }
+        [data-theme="notebook"] h1::before {
+            content: '📓 ';
+        }
+        [data-theme="notebook"] h1 .default-emoji {
+            display: none;
+        }
+
+        /* RETRO SPECIAL */
+        [data-theme="retro"] h1::before {
+            content: 'C:\\TASKS> ';
+            font-size: 0.65em;
+            opacity: 0.7;
+        }
+        [data-theme="retro"] .btn-primary {
+            background: transparent;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+        [data-theme="retro"] .btn-primary:hover {
+            background: var(--color-primary);
+            color: #0d0d0d;
+        }
+
+        /* DARK ELEGANT task accent border */
+        [data-theme="dark-elegant"] .task-item {
+            border-left: 3px solid var(--color-primary) !important;
+        }
+        [data-theme="dark-elegant"] .task-item.completed {
+            border-left-color: var(--color-success) !important;
+        }
+
+        /* PASTEL background gradient */
+        [data-theme="pastel"] body {
+            background: linear-gradient(135deg, #fce4ec 0%, #ede7f6 50%, #e3f2fd 100%);
+            min-height: 100vh;
+        }
+
+        /* ══════════════════════════════════════════
+           BASE STYLES
+        ══════════════════════════════════════════ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--body-font);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            padding: 12px 12px 80px;
+            line-height: 1.5;
+            text-shadow: var(--body-text-shadow);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        /* ── Header Row ── */
+        .header-row {
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--color-text-primary);
+        }
+
+        /* ── Theme Cards Switcher ── */
+        .theme-switcher {
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .theme-switcher-label {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.5rem;
+        }
+
+        .theme-cards-track {
+            display: flex;
+            gap: 0.6rem;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding-bottom: 4px;
+            cursor: grab;
+        }
+
+        .theme-cards-track:active {
+            cursor: grabbing;
+        }
+
+        .theme-cards-track::-webkit-scrollbar {
+            display: none;
+        }
+
+        .theme-card {
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            width: 80px;
+            border-radius: 10px;
+            padding: 0.5rem 0.4rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+            user-select: none;
+        }
+
+        .theme-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .theme-card.active {
+            border-color: currentColor;
+            transform: translateY(-3px);
+        }
+
+        .theme-card-preview {
+            width: 56px;
+            height: 38px;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .theme-card-name {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            line-height: 1.2;
+        }
+
+        /* Per-theme card colors */
+        .theme-card[data-theme-choice="neon"] {
+            background: #0a0e27;
+            color: #00ff9f;
+        }
+        .theme-card[data-theme-choice="neon"] .theme-card-preview {
+            background: #1a1f3a;
+            border: 1px solid #00d4ff;
+            box-shadow: 0 0 8px rgba(0,212,255,0.4);
+        }
+        .theme-card[data-theme-choice="neon"] .theme-card-preview::before {
+            content: '';
+            position: absolute;
+            top: 6px; left: 6px; right: 6px;
+            height: 5px;
+            background: #00ff9f;
+            border-radius: 2px;
+            box-shadow: 0 0 6px #00ff9f;
+        }
+        .theme-card[data-theme-choice="neon"] .theme-card-preview::after {
+            content: '';
+            position: absolute;
+            top: 16px; left: 6px; right: 14px;
+            height: 4px;
+            background: #ff00ff;
+            border-radius: 2px;
+            box-shadow: 0 0 6px #ff00ff;
+        }
+
+        .theme-card[data-theme-choice="notebook"] {
+            background: #fdf6e3;
+            color: #5c4a2a;
+        }
+        .theme-card[data-theme-choice="notebook"] .theme-card-preview {
+            background: #fdf6e3;
+            background-image: repeating-linear-gradient(transparent,transparent 6px,#b8d4e8 6px,#b8d4e8 7px);
+            border-left: 3px solid #e88080;
+        }
+        .theme-card[data-theme-choice="notebook"] .theme-card-preview::before {
+            content: '';
+            position: absolute;
+            top: 8px; left: 6px; right: 6px;
+            height: 3px;
+            background: #5c4a2a;
+            border-radius: 1px;
+        }
+
+        .theme-card[data-theme-choice="minimal"] {
+            background: #ffffff;
+            color: #111827;
+            border: 2px solid #e5e7eb !important;
+        }
+        .theme-card[data-theme-choice="minimal"].active {
+            border-color: #111827 !important;
+        }
+        .theme-card[data-theme-choice="minimal"] .theme-card-preview {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+        }
+        .theme-card[data-theme-choice="minimal"] .theme-card-preview::before {
+            content: '';
+            position: absolute;
+            top: 8px; left: 6px; right: 6px;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+        }
+        .theme-card[data-theme-choice="minimal"] .theme-card-preview::after {
+            content: '';
+            position: absolute;
+            top: 17px; left: 6px; right: 16px;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+        }
+
+        .theme-card[data-theme-choice="retro"] {
+            background: #0d0d0d;
+            color: #33ff33;
+        }
+        .theme-card[data-theme-choice="retro"] .theme-card-preview {
+            background: #111;
+            border: 1px solid #1a3a1a;
+        }
+        .theme-card[data-theme-choice="retro"] .theme-card-preview::before {
+            content: '';
+            position: absolute;
+            top: 6px; left: 6px; right: 6px;
+            height: 4px;
+            background: #33ff33;
+            border-radius: 0;
+            box-shadow: 0 0 6px #33ff33;
+        }
+        .theme-card[data-theme-choice="retro"] .theme-card-preview::after {
+            content: '';
+            position: absolute;
+            top: 15px; left: 6px; right: 18px;
+            height: 4px;
+            background: #1a9a1a;
+            border-radius: 0;
+        }
+
+        .theme-card[data-theme-choice="pastel"] {
+            background: linear-gradient(135deg, #fce4ec, #e3f2fd);
+            color: #5c4b8a;
+        }
+        .theme-card[data-theme-choice="pastel"] .theme-card-preview {
+            background: linear-gradient(135deg, #fce4ec 0%, #ede7f6 100%);
+        }
+        .theme-card[data-theme-choice="pastel"] .theme-card-preview::before {
+            content: '';
+            position: absolute;
+            top: 6px; left: 6px; right: 6px;
+            height: 10px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(158,134,200,0.2);
+        }
+        .theme-card[data-theme-choice="pastel"] .theme-card-preview::after {
+            content: '';
+            position: absolute;
+            top: 22px; left: 6px; right: 14px;
+            height: 10px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(158,134,200,0.2);
+        }
+
+        .theme-card[data-theme-choice="dark-elegant"] {
+            background: #1c1c1e;
+            color: #f5f5f7;
+        }
+        .theme-card[data-theme-choice="dark-elegant"] .theme-card-preview {
+            background: #2c2c2e;
+            border-left: 3px solid #0a84ff;
+        }
+        .theme-card[data-theme-choice="dark-elegant"] .theme-card-preview::before {
+            content: '';
+            position: absolute;
+            top: 8px; left: 8px; right: 8px;
+            height: 4px;
+            background: #f5f5f7;
+            border-radius: 2px;
+            opacity: 0.8;
+        }
+        .theme-card[data-theme-choice="dark-elegant"] .theme-card-preview::after {
+            content: '';
+            position: absolute;
+            top: 18px; left: 8px; right: 18px;
+            height: 4px;
+            background: #8e8e93;
+            border-radius: 2px;
+        }
+
+        /* ── Form ── */
+        .add-task-form {
+            background: var(--color-surface);
+            padding: 0.875rem;
+            border-radius: var(--radius-form);
+            border: var(--form-border);
+            margin-bottom: 1rem;
+            box-shadow: var(--form-shadow);
+        }
+
+        .form-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: stretch;
+        }
+
+        .form-group input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-btn);
+            font-size: 1rem;
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            font-family: var(--body-font);
+            min-width: 0;
+        }
+
+        .form-group input:focus {
+            outline: 2px solid var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .btn {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: var(--radius-btn);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--body-font);
+            min-height: 44px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        /* ── Filters ── */
+        .filters {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            align-items: center;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 2px;
+        }
+
+        .filters::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            padding: 0.45rem 0.875rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-btn);
+            background: var(--color-surface);
+            color: var(--color-text-primary);
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            font-family: var(--body-font);
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-height: 36px;
+        }
+
+        .filter-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .sort-container {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .sort-label {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+            white-space: nowrap;
+        }
+
+        .sort-select {
+            padding: 0.45rem 1.75rem 0.45rem 0.6rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-btn);
+            background: var(--color-surface);
+            color: var(--color-text-primary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            appearance: none;
+            font-family: var(--body-font);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300ff9f' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+        }
+
+        .sort-select:focus {
+            outline: 2px solid var(--color-primary);
+        }
+
+        /* ── Stats ── */
+        .stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stats {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card {
+            background: var(--color-surface);
+            padding: 0.5rem 0.6rem;
+            border-radius: var(--radius-btn);
+            border: var(--stat-border);
+            flex: 1;
+            text-align: center;
+            box-shadow: var(--stat-shadow);
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            line-height: 1.2;
+        }
+
+        /* ── Task Items ── */
+        .tasks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .task-item {
+            background: var(--color-surface);
+            padding: 0.75rem 0.75rem;
+            border-radius: var(--radius-task);
+            border: var(--task-border);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            transition: all 0.3s;
+            box-shadow: var(--task-shadow);
+        }
+
+        .task-item:hover {
+            box-shadow: var(--task-hover-shadow);
+            transform: translateY(-2px);
+        }
+
+        .task-item.completed {
+            opacity: 0.7;
+        }
+
+        .task-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--color-primary);
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .task-content-wrapper {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            color: var(--color-text-primary);
+        }
+
+        .task-item.completed .task-title {
+            text-decoration: line-through;
+            color: var(--color-text-secondary);
+        }
+
+        .task-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem 0.75rem;
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+        }
+
+        .task-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            white-space: nowrap;
+        }
+
+        .task-duration {
+            font-weight: 500;
+            color: var(--color-success);
+        }
+
+        .task-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            flex-shrink: 0;
+            align-items: stretch;
+        }
+
+        .btn-delete {
+            padding: 0.5rem 0.6rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-btn);
+            background: transparent;
+            color: var(--color-error);
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+            font-family: var(--body-font);
+            min-height: 36px;
+            text-align: center;
+        }
+
+        .btn-delete:hover {
+            background: var(--color-error);
+            color: white;
+            border-color: var(--color-error);
+        }
+
+        /* ── Priority Stars ── */
+        .priority-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .priority-label {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .star {
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 0, 0.3);
+            transition: all 0.2s;
+        }
+
+        [data-theme="minimal"] .star,
+        [data-theme="notebook"] .star,
+        [data-theme="pastel"] .star,
+        [data-theme="dark-elegant"] .star {
+            color: rgba(180, 150, 0, 0.25);
+        }
+
+        .star:hover,
+        .star.filled {
+            color: #f0b429;
+        }
+
+        .star.filled {
+            transform: scale(1.1);
+        }
+
+        .task-priority {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .task-priority .star {
+            font-size: 0.9rem;
+        }
+
+        /* ── Empty State ── */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* ══════════════════════════════════════════
+           REMINDERS
+        ══════════════════════════════════════════ */
+        .btn-reminder {
+            padding: 0.5rem 0.6rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-btn);
+            background: transparent;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+            font-family: var(--body-font);
+            min-height: 36px;
+            text-align: center;
+        }
+
+        .btn-reminder:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .btn-reminder.has-reminder {
+            color: var(--color-success);
+            border-color: var(--color-success);
+        }
+
+        .reminder-picker {
+            display: none;
+            margin-top: 0.6rem;
+            padding: 0.6rem 0.75rem;
+            background: var(--color-bg-primary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-btn);
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .reminder-picker.open {
+            display: flex;
+        }
+
+        .reminder-input {
+            padding: 0.4rem 0.6rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-btn);
+            background: var(--color-surface);
+            color: var(--color-text-primary);
+            font-size: 0.8rem;
+            font-family: var(--body-font);
+        }
+
+        .reminder-input:focus {
+            outline: 2px solid var(--color-primary);
+        }
+
+        .btn-reminder-save {
+            padding: 0.4rem 0.75rem;
+            border: none;
+            border-radius: var(--radius-btn);
+            background: var(--color-primary);
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: var(--body-font);
+            transition: background 0.2s;
+        }
+
+        .btn-reminder-save:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-reminder-clear {
+            padding: 0.4rem 0.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-btn);
+            background: transparent;
+            color: var(--color-error);
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: var(--body-font);
+        }
+
+        /* ══════════════════════════════════════════
+           IN-APP NOTIFICATION BANNERS
+        ══════════════════════════════════════════ */
+        #notificationBanners {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            left: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9999;
+            max-width: 100%;
+            pointer-events: none;
+        }
+
+        .notification-banner {
+            background: var(--color-surface);
+            border: 2px solid var(--color-primary);
+            border-radius: var(--radius-form);
+            padding: 1rem 2.5rem 1rem 1rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+            position: relative;
+            pointer-events: all;
+            animation: bannerSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes bannerSlideIn {
+            from { transform: translateX(120%); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+
+        .notification-banner-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--color-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-banner-body {
+            font-size: 0.85rem;
+            color: var(--color-text-primary);
+            word-break: break-word;
+        }
+
+        .notification-banner-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.6rem;
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+            padding: 2px;
+        }
+
+        .notification-banner-close:hover {
+            color: var(--color-text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-row">
+            <h1>📝 Task Tracker</h1>
+        </div>
+
+        <div class="theme-switcher">
+            <div class="theme-switcher-label">Theme</div>
+            <div class="theme-cards-track" id="themeCards">
+                <div class="theme-card" data-theme-choice="neon">
+                    <div class="theme-card-preview"></div>
+                    <div class="theme-card-name">⚡ Neon</div>
+                </div>
+                <div class="theme-card" data-theme-choice="notebook">
+                    <div class="theme-card-preview"></div>
+                    <div class="theme-card-name">📓 Notebook</div>
+                </div>
+                <div class="theme-card" data-theme-choice="minimal">
+                    <div class="theme-card-preview"></div>
+                    <div class="theme-card-name">◻ Minimal</div>
+                </div>
+                <div class="theme-card" data-theme-choice="retro">
+                    <div class="theme-card-preview"></div>
+                    <div class="theme-card-name">💾 Retro</div>
+                </div>
+                <div class="theme-card" data-theme-choice="pastel">
+                    <div class="theme-card-preview"></div>
+                    <div class="theme-card-name">🌸 Pastel</div>
+                </div>
+                <div class="theme-card" data-theme-choice="dark-elegant">
+                    <div class="theme-card-preview"></div>
+                    <div class="theme-card-name">🌙 Elegant</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="add-task-form">
+            <form id="taskForm" class="form-group">
+                <input
+                    type="text"
+                    id="taskInput"
+                    placeholder="Enter a new task..."
+                    required
+                    autocomplete="off"
+                >
+                <button type="submit" class="btn btn-primary">Add Task</button>
+            </form>
+            <div class="priority-container">
+                <span class="priority-label">Priority:</span>
+                <div class="star-rating" id="priorityRating">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All Tasks</button>
+            <button class="filter-btn" data-filter="active">Active</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+            <div class="sort-container">
+                <span class="sort-label">Sort by:</span>
+                <select id="sortSelect" class="sort-select">
+                    <option value="created-desc">Newest First</option>
+                    <option value="created-asc">Oldest First</option>
+                    <option value="priority-desc">High Priority</option>
+                    <option value="priority-asc">Low Priority</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="tasks-list" id="tasksList"></div>
+    </div>
+
+    <!-- In-app notification banners -->
+    <div id="notificationBanners"></div>
+
+    <script>
+        class TaskTracker {
+            constructor() {
+                this.tasks = this.loadTasks();
+                this.currentFilter = 'all';
+                this.currentPriority = 3;
+                this.currentSort = 'created-desc';
+                this.currentTheme = localStorage.getItem('theme') || 'neon';
+                this._reminderTicker = null;
+                this.init();
+            }
+
+            init() {
+                document.getElementById('taskForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addTask();
+                });
+
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.setFilter(e.target.dataset.filter);
+                    });
+                });
+
+                document.getElementById('sortSelect').addEventListener('change', (e) => {
+                    this.currentSort = e.target.value;
+                    this.render();
+                });
+
+                this.initPriorityRating();
+                this.initTheme();
+                this.checkReminders();
+                this.scheduleReminders();
+                this.render();
+            }
+
+            // ══════════════════════════
+            // THEME
+            // ══════════════════════════
+            initTheme() {
+                document.documentElement.setAttribute('data-theme', this.currentTheme);
+                const track = document.getElementById('themeCards');
+
+                // Mark active card
+                const markActive = (theme) => {
+                    track.querySelectorAll('.theme-card').forEach(card => {
+                        card.classList.toggle('active', card.dataset.themeChoice === theme);
+                    });
+                };
+                markActive(this.currentTheme);
+
+                // Click to select
+                track.querySelectorAll('.theme-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        this.currentTheme = card.dataset.themeChoice;
+                        localStorage.setItem('theme', this.currentTheme);
+                        document.documentElement.setAttribute('data-theme', this.currentTheme);
+                        markActive(this.currentTheme);
+                    });
+                });
+
+                // Drag to scroll on desktop
+                let isDown = false, startX, scrollLeft;
+                track.addEventListener('mousedown', e => {
+                    isDown = true;
+                    startX = e.pageX - track.offsetLeft;
+                    scrollLeft = track.scrollLeft;
+                    track.style.cursor = 'grabbing';
+                });
+                track.addEventListener('mouseleave', () => { isDown = false; track.style.cursor = 'grab'; });
+                track.addEventListener('mouseup', () => { isDown = false; track.style.cursor = 'grab'; });
+                track.addEventListener('mousemove', e => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - track.offsetLeft;
+                    track.scrollLeft = scrollLeft - (x - startX);
+                });
+            }
+
+            // ══════════════════════════
+            // PRIORITY STARS
+            // ══════════════════════════
+            initPriorityRating() {
+                const stars = document.querySelectorAll('#priorityRating .star');
+                stars.forEach(star => {
+                    star.addEventListener('click', (e) => {
+                        this.currentPriority = parseInt(e.target.dataset.value);
+                        this.updatePriorityDisplay();
+                    });
+                });
+                this.updatePriorityDisplay();
+            }
+
+            updatePriorityDisplay() {
+                const stars = document.querySelectorAll('#priorityRating .star');
+                stars.forEach((star, index) => {
+                    star.classList.toggle('filled', index < this.currentPriority);
+                });
+            }
+
+            // ══════════════════════════
+            // STORAGE
+            // ══════════════════════════
+            loadTasks() {
+                const saved = localStorage.getItem('tasks');
+                return saved ? JSON.parse(saved) : [];
+            }
+
+            saveTasks() {
+                localStorage.setItem('tasks', JSON.stringify(this.tasks));
+            }
+
+            // ══════════════════════════
+            // TASK CRUD
+            // ══════════════════════════
+            addTask() {
+                const input = document.getElementById('taskInput');
+                const title = input.value.trim();
+                if (!title) return;
+
+                const task = {
+                    id: Date.now(),
+                    title: title,
+                    completed: false,
+                    createdAt: new Date().toISOString(),
+                    completedAt: null,
+                    duration: null,
+                    priority: this.currentPriority,
+                    reminderAt: null,
+                    reminderFired: false,
+                };
+
+                this.tasks.unshift(task);
+                this.saveTasks();
+                input.value = '';
+                this.currentPriority = 3;
+                this.updatePriorityDisplay();
+                this.render();
+            }
+
+            setPriority(id, priority) {
+                const task = this.tasks.find(t => t.id === id);
+                if (!task) return;
+                task.priority = priority;
+                this.saveTasks();
+                this.render();
+            }
+
+            toggleTask(id) {
+                const task = this.tasks.find(t => t.id === id);
+                if (!task) return;
+
+                task.completed = !task.completed;
+                if (task.completed) {
+                    task.completedAt = new Date().toISOString();
+                    task.duration = this.calculateDuration(task.createdAt, task.completedAt);
+                } else {
+                    task.completedAt = null;
+                    task.duration = null;
+                }
+
+                this.saveTasks();
+                this.render();
+            }
+
+            deleteTask(id) {
+                this.tasks = this.tasks.filter(t => t.id !== id);
+                this.saveTasks();
+                this.render();
+            }
+
+            // ══════════════════════════
+            // REMINDERS
+            // ══════════════════════════
+            toggleReminderPicker(id) {
+                const picker = document.getElementById(`reminder-picker-${id}`);
+                if (picker) picker.classList.toggle('open');
+            }
+
+            saveReminder(id) {
+                const input = document.getElementById(`reminder-input-${id}`);
+                if (!input || !input.value) return;
+                const task = this.tasks.find(t => t.id === id);
+                if (!task) return;
+                task.reminderAt = new Date(input.value).toISOString();
+                task.reminderFired = false;
+                this.saveTasks();
+                this.scheduleReminders();
+                this.render();
+            }
+
+            clearReminder(id) {
+                const task = this.tasks.find(t => t.id === id);
+                if (!task) return;
+                task.reminderAt = null;
+                task.reminderFired = false;
+                this.saveTasks();
+                this.render();
+            }
+
+            toDatetimeLocal(isoString) {
+                const d = new Date(isoString);
+                const pad = n => String(n).padStart(2, '0');
+                return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+            }
+
+            formatReminderDate(isoString) {
+                const d = new Date(isoString);
+                return d.toLocaleString('en-IN', {
+                    day: 'numeric', month: 'short',
+                    hour: '2-digit', minute: '2-digit'
+                });
+            }
+
+            // Check all pending reminders right now
+            checkReminders() {
+                const now = new Date();
+                let changed = false;
+
+                this.tasks.forEach(task => {
+                    if (!task.reminderAt || task.reminderFired || task.completed) return;
+                    if (now >= new Date(task.reminderAt)) {
+                        task.reminderFired = true;
+                        changed = true;
+                        this.showBanner('🔔 Reminder', `"${task.title}"`);
+                        this.sendBrowserNotification(task.title);
+                    }
+                });
+
+                if (changed) {
+                    this.saveTasks();
+                    this.render();
+                    this.notifyServiceWorker();
+                }
+            }
+
+            // Kick off the 30-second polling ticker
+            scheduleReminders() {
+                if (this._reminderTicker) clearInterval(this._reminderTicker);
+                this._reminderTicker = setInterval(() => this.checkReminders(), 30000);
+                this.notifyServiceWorker();
+            }
+
+            // Send pending reminders to SW for background delivery
+            notifyServiceWorker() {
+                if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) return;
+                const pending = this.tasks.filter(t => t.reminderAt && !t.reminderFired && !t.completed);
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'SCHEDULE_REMINDERS',
+                    reminders: pending.map(t => ({ id: t.id, title: t.title, reminderAt: t.reminderAt }))
+                });
+            }
+
+            // ── In-app banner ──
+            showBanner(title, body) {
+                const container = document.getElementById('notificationBanners');
+                const banner = document.createElement('div');
+                banner.className = 'notification-banner';
+                banner.innerHTML = `
+                    <button class="notification-banner-close" onclick="this.parentElement.remove()">✕</button>
+                    <div class="notification-banner-title">${title}</div>
+                    <div class="notification-banner-body">${this.escapeHtml(body)}</div>
+                `;
+                container.appendChild(banner);
+                setTimeout(() => banner.remove(), 8000);
+            }
+
+            // ── OS browser notification ──
+            async sendBrowserNotification(taskTitle) {
+                if (!('Notification' in window)) return;
+
+                if (Notification.permission === 'default') {
+                    await Notification.requestPermission();
+                }
+
+                if (Notification.permission === 'granted') {
+                    const notif = new Notification('Task Reminder 🔔', {
+                        body: taskTitle,
+                        icon: 'manifest-icon-192.png',
+                        tag: `task-reminder-${Date.now()}`,
+                    });
+                    notif.onclick = () => { window.focus(); notif.close(); };
+                }
+            }
+
+            // ══════════════════════════
+            // FILTERS / SORT
+            // ══════════════════════════
+            setFilter(filter) {
+                this.currentFilter = filter;
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.filter === filter);
+                });
+                this.render();
+            }
+
+            getFilteredTasks() {
+                let filtered;
+                if (this.currentFilter === 'active') {
+                    filtered = this.tasks.filter(t => !t.completed);
+                } else if (this.currentFilter === 'completed') {
+                    filtered = this.tasks.filter(t => t.completed);
+                } else {
+                    filtered = [...this.tasks];
+                }
+                return this.sortTasks(filtered);
+            }
+
+            sortTasks(tasks) {
+                const sorted = [...tasks];
+                switch(this.currentSort) {
+                    case 'created-asc':
+                        return sorted.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                    case 'created-desc':
+                        return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    case 'priority-asc':
+                        return sorted.sort((a, b) => (a.priority || 3) - (b.priority || 3));
+                    case 'priority-desc':
+                        return sorted.sort((a, b) => (b.priority || 3) - (a.priority || 3));
+                    default:
+                        return sorted;
+                }
+            }
+
+            // ══════════════════════════
+            // HELPERS
+            // ══════════════════════════
+            calculateDuration(start, end) {
+                const diffMs = new Date(end) - new Date(start);
+                const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                if (days > 0) return `${days}d ${hours}h`;
+                if (hours > 0) return `${hours}h ${minutes}m`;
+                return `${minutes}m`;
+            }
+
+            formatDate(isoString) {
+                const date = new Date(isoString);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+
+                if (diffMins < 1) return 'Just now';
+                if (diffMins < 60) return `${diffMins}m ago`;
+                if (diffHours < 24) return `${diffHours}h ago`;
+                if (diffDays < 7) return `${diffDays}d ago`;
+                return date.toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+                });
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // ══════════════════════════
+            // RENDER
+            // ══════════════════════════
+            renderStats() {
+                const total = this.tasks.length;
+                const completed = this.tasks.filter(t => t.completed).length;
+                const active = total - completed;
+
+                document.getElementById('stats').innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-value">${total}</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${active}</div>
+                        <div class="stat-label">Active</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${completed}</div>
+                        <div class="stat-label">Done</div>
+                    </div>
+                `;
+            }
+
+            render() {
+                const filteredTasks = this.getFilteredTasks();
+                const tasksList = document.getElementById('tasksList');
+                this.renderStats();
+
+                if (filteredTasks.length === 0) {
+                    tasksList.innerHTML = `
+                        <div class="empty-state">
+                            <p>No tasks found. Add your first task above!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                tasksList.innerHTML = filteredTasks.map(task => `
+                    <div class="task-item ${task.completed ? 'completed' : ''}">
+                        <input
+                            type="checkbox"
+                            class="task-checkbox"
+                            ${task.completed ? 'checked' : ''}
+                            onchange="tracker.toggleTask(${task.id})"
+                        >
+                        <div class="task-content-wrapper">
+                            <div class="task-content">
+                                <div class="task-title">${this.escapeHtml(task.title)}</div>
+                                <div class="task-meta">
+                                    <span class="task-meta-item">
+                                        📅 ${this.formatDate(task.createdAt)}
+                                    </span>
+                                    ${task.completedAt ? `
+                                        <span class="task-meta-item">
+                                            ✅ ${this.formatDate(task.completedAt)}
+                                        </span>
+                                    ` : ''}
+                                    ${task.duration ? `
+                                        <span class="task-meta-item task-duration">
+                                            ⏱️ ${task.duration}
+                                        </span>
+                                    ` : ''}
+                                    ${task.reminderAt && !task.reminderFired ? `
+                                        <span class="task-meta-item" style="color:var(--color-success)">
+                                            🔔 ${this.formatReminderDate(task.reminderAt)}
+                                        </span>
+                                    ` : ''}
+                                    ${task.reminderFired ? `
+                                        <span class="task-meta-item" style="color:var(--color-text-secondary)">
+                                            🔕 Reminded
+                                        </span>
+                                    ` : ''}
+                                    <span class="task-meta-item task-priority">
+                                        <span class="star-rating">
+                                            ${[1,2,3,4,5].map(i => `
+                                                <span class="star ${i <= (task.priority||3) ? 'filled' : ''}"
+                                                      onclick="tracker.setPriority(${task.id},${i})">★</span>
+                                            `).join('')}
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="reminder-picker" id="reminder-picker-${task.id}">
+                                <input type="datetime-local" class="reminder-input"
+                                    id="reminder-input-${task.id}"
+                                    value="${task.reminderAt ? this.toDatetimeLocal(task.reminderAt) : ''}"
+                                >
+                                <button class="btn-reminder-save"
+                                    onclick="tracker.saveReminder(${task.id})">Set</button>
+                                ${task.reminderAt ? `
+                                    <button class="btn-reminder-clear"
+                                        onclick="tracker.clearReminder(${task.id})">Clear</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn-reminder ${task.reminderAt && !task.reminderFired ? 'has-reminder' : ''}"
+                                onclick="tracker.toggleReminderPicker(${task.id})">
+                                ${task.reminderAt && !task.reminderFired ? '🔔' : '🔕'}
+                            </button>
+                            <button class="btn-delete" onclick="tracker.deleteTask(${task.id})">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        const tracker = new TaskTracker();
+
+        // ── Service Worker (PWA) ──
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                // Once SW is active, send it any pending reminders
+                reg.addEventListener('updatefound', () => {});
+                navigator.serviceWorker.ready.then(() => tracker.notifyServiceWorker());
+            }).catch(err => {
+                console.warn('[SW] Registration failed (file:// not supported — serve via http):', err.message);
+            });
+        }
+    </script>
+</body>
+</html>
