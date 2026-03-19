@@ -2,7 +2,7 @@
 
 **Effective date:** 2026-03-19
 **Developer:** Vish (com.vish_apps.tasktracker)
-**Contact:** *(add your email here)*
+**Contact:** vishapps.support@gmail.com
 
 ---
 
@@ -92,7 +92,7 @@ If we update this policy, the new version will be posted at this same URL with a
 
 If you have any questions about this privacy policy, please contact:
 
-**Email:** *(add your email here)*
+**Email:** vishapps.support@gmail.com
 
 ---
 
