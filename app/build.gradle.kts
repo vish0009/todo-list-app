@@ -1,5 +1,5 @@
 import java.util.Properties
-1plugins {
+plugins {
     alias(libs.plugins.android.application)
 }
 
@@ -10,7 +10,7 @@ val localProps = Properties().apply {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.vish_apps.tasktracker"
     compileSdk = 35
 
     signingConfigs {
@@ -23,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.vish_apps.tasktracker"
         minSdk        = 26
         targetSdk     = 35
         versionCode   = 1

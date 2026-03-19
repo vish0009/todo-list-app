@@ -1346,7 +1346,7 @@
                 banner.className = 'notification-banner';
                 banner.innerHTML = `
                     <button class="notification-banner-close" onclick="this.parentElement.remove()">✕</button>
-                    <div class="notification-banner-title">${title}</div>
+                    <div class="notification-banner-title">${this.escapeHtml(title)}</div>
                     <div class="notification-banner-body">${this.escapeHtml(body)}</div>
                 `;
                 container.appendChild(banner);

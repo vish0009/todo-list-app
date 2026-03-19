@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.vish_apps.tasktracker;
 
 import org.junit.Test;
 

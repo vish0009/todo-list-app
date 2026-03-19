@@ -1,6 +1,9 @@
 # ── WebView JavaScript Interface ──────────────────────────────────────────────
-# Keep the AndroidPrintBridge so the JS bridge works after R8 minification
--keepclassmembers class com.example.myapplication.MainActivity$AndroidPrintBridge {
+# Keep both JS bridges so they survive R8 minification in release builds
+-keepclassmembers class com.vish_apps.tasktracker.MainActivity$AndroidPrintBridge {
+    public *;
+}
+-keepclassmembers class com.vish_apps.tasktracker.MainActivity$AndroidNotifyBridge {
     public *;
 }
 # Keep @JavascriptInterface annotations across the codebase

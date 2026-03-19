@@ -1,7 +1,7 @@
 const CACHE_NAME = 'task-tracker-v1';
 const ASSETS = [
     './',
-    './TO_do_list_app.html',
+    './index.html',
     './manifest.json',
     './manifest-icon-192.png',
     './manifest-icon-512.png',
@@ -72,9 +72,9 @@ self.addEventListener('notificationclick', event => {
     event.notification.close();
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
-            const existing = list.find(c => c.url.includes('TO_do_list_app'));
+            const existing = list.find(c => c.url.includes('index.html'));
             if (existing) return existing.focus();
-            return clients.openWindow('./TO_do_list_app.html');
+            return clients.openWindow('./index.html');
         })
     );
 });

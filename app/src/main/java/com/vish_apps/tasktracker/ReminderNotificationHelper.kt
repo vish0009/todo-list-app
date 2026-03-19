@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.vish_apps.tasktracker
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
